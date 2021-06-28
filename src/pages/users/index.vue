@@ -24,7 +24,7 @@
     </div>
     <div class="conlist">
       <el-table :data="tableData" style="width: 100%">
-        <el-table-column type="index" width="50"> </el-table-column>
+        <el-table-column type="index" width="60"> </el-table-column>
         <el-table-column prop="username" label="用户名" width="180">
         </el-table-column>
         <el-table-column prop="mobile" label="手机号" width="">
@@ -42,7 +42,7 @@
           </template>
         </el-table-column>
         <el-table-column prop="role_name" label="角色"> </el-table-column>
-        <el-table-column label="操作" width="180">
+        <el-table-column label="操作" width="120">
           <template slot-scope="scope">
             <el-button @click="handleClick(scope.row)" type="text" size="small"
               >编辑</el-button

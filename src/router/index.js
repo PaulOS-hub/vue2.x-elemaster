@@ -15,13 +15,29 @@ const commonRoutes = [
         path: "/home",
         component: () => import('../views/home'),
         redirect: "/users",
-        children: [{
-            path: "/users",
-            component: () => import('../pages/users'),
-            meta: {
-                Auth: true
-            }
-        }],
+        children: [
+            {
+                path: "/users",
+                component: () => import('../pages/users'),
+                meta: {
+                    Auth: true
+                }
+            },
+            {
+                path: "/roles",
+                component: () => import('../pages/roles'),
+                meta: {
+                    Auth: true
+                }
+            },
+            {
+                path: "/rights",
+                component: () => import('../pages/rights'),
+                meta: {
+                    Auth: true
+                }
+            },
+        ],
         meta: {
             Auth: true
         }

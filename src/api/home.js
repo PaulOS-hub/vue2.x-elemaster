@@ -1,6 +1,5 @@
 
-import { get, post } from '../util/axios'
-import axios from '../util/axios'
+import axios, { get, post } from '../util/axios'
 export const getSideBar = p => get('/menus', p);
 export const getUserList = p => get("/users", p)
 export const addUserList = p => post("/users", p)

@@ -1,7 +1,7 @@
 <template>
   <div>
     <el-dialog
-      title="收货地址"
+      :title="changType==='edit'?'编辑':'新增'"
       :show-close="false"
       :close-on-press-escape="false"
       :close-on-click-modal="false"

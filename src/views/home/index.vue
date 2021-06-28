@@ -22,7 +22,7 @@
           </div>
         </el-menu>
       </el-header>
-      <el-container style="flex: 1; display: flex">
+      <el-container style="flex: 1; display: flex;height:100%">
         <div class="showSide" style="height: 100%; background: #545c64">
           <!-- <el-radio-group v-model="isCollapse" style="margin-bottom: 20px">
             <el-radio-button @click="isCollapse = !isCollapse" >展开</el-radio-button>
@@ -68,7 +68,7 @@
                   <el-menu-item
                     v-for="item_ in item.children"
                     :key="item_.id"
-                    :index="'/' + item.path"
+                    :index="'/' + item_.path"
                     >{{ item_.authName }}</el-menu-item
                   >
                 </el-menu-item-group>
@@ -104,12 +104,12 @@ export default {
     };
   },
   watch: {
-    '$route': {
+    $route: {
       handler(newVal) {
-        this.activeIndex = newVal.path
+        this.activeIndex = newVal.path;
       },
       immediate: true,
-    }
+    },
   },
   mounted() {
     this.getSideBarData();
@@ -142,6 +142,7 @@ export default {
   width: 100%;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
   .el-header {
     background-color: #545c64;
     color: #fff;
@@ -159,6 +160,8 @@ export default {
   }
 
   .el-main {
+    overflow: auto;
+    height: 100%;
   }
   .el-menu-demo {
     width: 100%;
@@ -211,5 +214,8 @@ export default {
 .el-menu-vertical-demo:not(.el-menu--collapse) {
   width: 200px;
   min-height: 400px;
+}
+/deep/ .el-container.is-vertical{
+  height: 100%;
 }
 </style>
