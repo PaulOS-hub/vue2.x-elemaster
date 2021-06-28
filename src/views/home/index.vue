@@ -5,51 +5,43 @@
         <el-menu
           class="el-menu-demo"
           mode="horizontal"
-          background-color="#545c64"
+          background-color="#333"
           text-color="#fff"
         >
           <div class="header-flex">
-            <el-menu-item> ICON </el-menu-item>
-            <!-- <el-menu-item @click="logout">  </el-menu-item> -->
-            <el-submenu :popper-append-to-body="false" index="x">
+            <div class="logoBG"></div>
+            <el-submenu style="width:110px" :popper-append-to-body="false" index="x">
               <template slot="title">
                 <div class="el-icon-user avatar"></div>
               </template>
               <el-menu-item>
-                <div style="textalign: center" @click="logout">退出登录</div>
+                <div style="textalign: center;width:110px" @click="logout">退出登录</div>
               </el-menu-item>
             </el-submenu>
           </div>
         </el-menu>
       </el-header>
-      <el-container style="flex: 1; display: flex;height:100%">
-        <div class="showSide" style="height: 100%; background: #545c64">
+      <el-container style="flex: 1; display: flex; height: 100%">
+        <div class="showSide" style="height: 100%; background: #333">
           <!-- <el-radio-group v-model="isCollapse" style="margin-bottom: 20px">
             <el-radio-button @click="isCollapse = !isCollapse" >展开</el-radio-button>
           </el-radio-group> -->
           <div
             @click="isCollapse = !isCollapse"
-            style="
-              font-size: 20px;
-              line-height: 40px;
-              text-align: center;
-              height: 40px;
-              color: #999;
-              cursor: pointer;
-              background: #444;
-            "
             :class="{
               'el-icon-s-fold': !isCollapse,
               'el-icon-s-unfold': isCollapse,
+              showSideBar: true,
             }"
-          ></div>
+          >
+          </div>
           <el-aside :width="isCollapse ? '70px' : '200px'">
             <el-menu
               :collapse-transition="false"
               :collapse="isCollapse"
               :default-active="activeIndex"
               class="el-menu-vertical-demo"
-              background-color="#545c64"
+              background-color="#333"
               text-color="#fff"
               unique-opened
               router
@@ -144,7 +136,7 @@ export default {
   flex-direction: column;
   overflow: hidden;
   .el-header {
-    background-color: #545c64;
+    background-color: #333;
     color: #fff;
     text-align: center;
     line-height: 60px;
@@ -154,7 +146,7 @@ export default {
   }
 
   .el-aside {
-    background-color: #545c64;
+    background-color: #333;
     color: #fff;
     text-align: center;
   }
@@ -215,7 +207,24 @@ export default {
   width: 200px;
   min-height: 400px;
 }
-/deep/ .el-container.is-vertical{
+/deep/ .el-container.is-vertical {
   height: 100%;
+}
+.showSideBar {
+  font-size: 28px;
+  line-height: 40px;
+  text-align: center;
+  height: 40px;
+  color: #999;
+  cursor: pointer;
+  background: #333;
+}
+.showSideBar:hover {
+  background: rgb(67, 74, 80);
+}
+.logoBG {
+  width: 200px;
+  height: 60px;
+  background: url("../../assets/audi.webp") no-repeat center center / 100% 100%;
 }
 </style>
