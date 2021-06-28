@@ -5,20 +5,11 @@ import App from './App.vue';
 import router from './router'
 import './style/common.less'
 import store from './store'
+import axios from 'axios'
+import { message } from './util/resetMessage'
 Vue.use(ElementUI);
-
-router.beforeEach((to, from, next) => {
-  if (to.meta.Auth) {
-    if (store.state.token) {
-      next()
-    } else {
-      next("/login")
-    }
-  } else {
-    next()
-  }
-})
-
+Vue.prototype.$axios = axios
+Vue.prototype.$message = message
 new Vue({
   el: '#app',
   router,

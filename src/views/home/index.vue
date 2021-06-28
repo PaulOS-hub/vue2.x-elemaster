@@ -3,51 +3,82 @@
     <el-container>
       <el-header>
         <el-menu
-          :default-active="activeIndex"
           class="el-menu-demo"
           mode="horizontal"
           background-color="#545c64"
-          @select="handleSelect"
           text-color="#fff"
         >
           <div class="header-flex">
             <el-menu-item> ICON </el-menu-item>
-            <el-menu-item @click="logout"> 退出登录 </el-menu-item>
+            <!-- <el-menu-item @click="logout">  </el-menu-item> -->
+            <el-submenu :popper-append-to-body="false" index="x">
+              <template slot="title">
+                <div class="el-icon-user avatar"></div>
+              </template>
+              <el-menu-item>
+                <div style="textalign: center" @click="logout">退出登录</div>
+              </el-menu-item>
+            </el-submenu>
           </div>
         </el-menu>
       </el-header>
       <el-container style="flex: 1; display: flex">
-        <el-aside width="200px">
-          <el-menu
-            default-active="1-1"
-            class="el-menu-vertical-demo"
-            @open="handleOpen"
-            @close="handleClose"
-            background-color="#545c64"
-            text-color="#fff"
-            active-text-color="#ffd04b"
-          >
-            <el-submenu index="1">
-              <template slot="title">
-                <i class="el-icon-location"></i>
-                <span>导航一</span>
-              </template>
-              <el-menu-item-group>
-                <el-menu-item index="1-1">选项1</el-menu-item>
-                <el-menu-item index="1-2">选项2</el-menu-item>
-              </el-menu-item-group>
-            </el-submenu>
-            <el-menu-item index="2">
-              <i class="el-icon-menu"></i>
-              <span slot="title">导航二</span>
-            </el-menu-item>
-            <el-menu-item index="4">
-              <i class="el-icon-setting"></i>
-              <span slot="title">导航四</span>
-            </el-menu-item>
-          </el-menu>
-        </el-aside>
-        <el-main style="flex: 1">Main</el-main>
+        <div class="showSide" style="height: 100%; background: #545c64">
+          <!-- <el-radio-group v-model="isCollapse" style="margin-bottom: 20px">
+            <el-radio-button @click="isCollapse = !isCollapse" >展开</el-radio-button>
+          </el-radio-group> -->
+          <div
+            @click="isCollapse = !isCollapse"
+            style="
+              font-size: 20px;
+              line-height: 40px;
+              text-align: center;
+              height: 40px;
+              color: #999;
+              cursor: pointer;
+              background: #444;
+            "
+            :class="{
+              'el-icon-s-fold': !isCollapse,
+              'el-icon-s-unfold': isCollapse,
+            }"
+          ></div>
+          <el-aside :width="isCollapse ? '70px' : '200px'">
+            <el-menu
+              :collapse-transition="false"
+              :collapse="isCollapse"
+              :default-active="activeIndex"
+              class="el-menu-vertical-demo"
+              background-color="#545c64"
+              text-color="#fff"
+              unique-opened
+              router
+              active-text-color="#409eff"
+            >
+              <el-submenu
+                v-for="item in sidebarList"
+                :key="item.id"
+                :index="item.id + ''"
+              >
+                <template slot="title">
+                  <i :class="iconList[item.id]"></i>
+                  <span>{{ item.authName }}</span>
+                </template>
+                <el-menu-item-group v-if="item.children">
+                  <el-menu-item
+                    v-for="item_ in item.children"
+                    :key="item_.id"
+                    :index="'/' + item.path"
+                    >{{ item_.authName }}</el-menu-item
+                  >
+                </el-menu-item-group>
+              </el-submenu>
+            </el-menu>
+          </el-aside>
+        </div>
+        <el-main style="flex: 1">
+          <router-view></router-view>
+        </el-main>
       </el-container>
     </el-container>
   </div>
@@ -55,18 +86,36 @@
 
 <script>
 import { mapMutations } from "vuex";
+import { getSideBar } from "../../api/home";
 export default {
   name: "home",
   data() {
     return {
       activeIndex: "",
+      sidebarList: [],
+      iconList: {
+        125: "el-icon-user-solid",
+        103: "el-icon-coordinate",
+        101: "el-icon-shopping-cart-full",
+        102: "el-icon-link",
+        145: "el-icon-goblet-square-full",
+      },
+      isCollapse: true,
     };
+  },
+  watch: {
+    '$route': {
+      handler(newVal) {
+        this.activeIndex = newVal.path
+      },
+      immediate: true,
+    }
+  },
+  mounted() {
+    this.getSideBarData();
   },
   methods: {
     ...mapMutations(["REMOVE_TOKEN"]),
-    handleSelect(key, keyPath) {
-      console.log(key, keyPath);
-    },
     logout() {
       this.$confirm("是否确定退出?", "提示", {
         confirmButtonText: "确定",
@@ -79,11 +128,9 @@ export default {
         })
         .catch(() => {});
     },
-    handleOpen(key, keyPath) {
-      console.log(key, keyPath);
-    },
-    handleClose(key, keyPath) {
-      console.log(key, keyPath);
+    async getSideBarData() {
+      const { data } = await getSideBar();
+      this.sidebarList = data;
     },
   },
 };
@@ -112,9 +159,6 @@ export default {
   }
 
   .el-main {
-    color: #fff;
-    text-align: center;
-    line-height: 160px;
   }
   .el-menu-demo {
     width: 100%;
@@ -122,7 +166,8 @@ export default {
   .header-flex {
     display: flex;
     justify-content: space-between;
-    padding: 0 10px;
+    padding: 0px;
+    box-sizing: border-box;
   }
   .el-dropdown {
     color: #fff;
@@ -139,5 +184,32 @@ export default {
   /deep/ .el-menu-item {
     text-align: left;
   }
+  /deep/ .el-menu--horizontal {
+    //   width:100px;
+  }
+  .avatar {
+    margin-right: 20px;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    color: #545c64;
+    background: #fff;
+    line-height: 40px;
+  }
+  .showSide {
+    display: flex;
+    flex-direction: column;
+  }
+  .el-aside {
+    flex: 1;
+  }
+}
+/deep/ .el-menu--horizontal {
+  //   width:100px;
+  text-align: center;
+}
+.el-menu-vertical-demo:not(.el-menu--collapse) {
+  width: 200px;
+  min-height: 400px;
 }
 </style>

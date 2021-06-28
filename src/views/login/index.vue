@@ -37,9 +37,7 @@
         ></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button
-          type="primary"
-          @click="submitForm('numberValidateForm')"
+        <el-button type="primary" @click="submitForm('numberValidateForm')"
           >登录</el-button
         >
         <el-button @click="resetForm('numberValidateForm')">清空</el-button>
@@ -66,16 +64,16 @@ export default {
       this.$refs[formName].validate(async (valid) => {
         if (valid) {
           const { data } = await login(this.numberValidateForm);
-          console.log(data);
           this.SET_TOKEN(data.token);
-          console.log(this.$store.state.token);
           if (data) {
             // 保存token至Store
-
             // 若有属性，代表成功
+            this.$message.success("登录成功");
             this.$router.push({
               path: "/home",
             });
+          } else {
+            this.$message.error("登录失败，账号或密码不正确");
           }
         } else {
           return false;
