@@ -86,7 +86,11 @@
 
 <script>
 import { getUserList, changeState, deleteUser } from "../../api/home";
-import { errorMessage, successMessage } from "../../config/constant";
+import {
+  deleteSuccess,
+  errorMessage,
+  successMessage,
+} from "../../config/constant";
 import addUser from "./addUser.vue";
 export default {
   data() {
@@ -94,28 +98,7 @@ export default {
       formInline: {
         query: "",
       },
-      tableData: [
-        {
-          date: "2016-05-02",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1518 弄",
-        },
-        {
-          date: "2016-05-04",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1517 弄",
-        },
-        {
-          date: "2016-05-01",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1519 弄",
-        },
-        {
-          date: "2016-05-03",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1516 弄",
-        },
-      ],
+      tableData: [],
       pageNum: 1,
       pageSize: 10,
       total: 0,
@@ -164,8 +147,12 @@ export default {
       })
         .then(async () => {
           const { data } = await deleteUser(e.id);
-          if (data.meta.status === 200) this.getList();
-          else this.$message.error(errorMessage);
+          if (data.meta.status === 200) {
+            this.$message.success(deleteSuccess);
+            this.getList();
+          } else {
+            this.$message.error(errorMessage);
+          }
         })
         .catch(() => {});
     },

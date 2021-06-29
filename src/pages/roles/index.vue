@@ -5,7 +5,7 @@
       <el-breadcrumb-item>用户管理</el-breadcrumb-item>
       <el-breadcrumb-item>角色列表</el-breadcrumb-item>
     </el-breadcrumb>
-    <div style="margin-top:20px">
+    <div style="margin-top: 20px">
       <el-table :data="tableData" style="width: 100%">
         <el-table-column type="expand" width="60">
           <template slot-scope="scope">
@@ -59,8 +59,14 @@
         </el-table-column>
         <el-table-column prop="level" label="操作">
           <template slot-scope="scope">
-            <el-button type="text" size="small">编辑</el-button>
-            <el-button type="text" style="margin-left: 15px" size="small"
+            <el-button type="text" @click="handleClick" size="small"
+              >编辑</el-button
+            >
+            <el-button
+              type="text"
+              @click="deleteByid(scope.row)"
+              style="margin-left: 15px"
+              size="small"
               >删除</el-button
             >
             <el-button
@@ -74,20 +80,24 @@
         </el-table-column>
       </el-table>
     </div>
-    <allowAuth @updateRoleList="getList" :detailObj="detailObj" :showdialogVisible.sync="showdialogVisible"></allowAuth>
+    <allowAuth
+      @updateRoleList="getList"
+      :detailObj="detailObj"
+      :showdialogVisible.sync="showdialogVisible"
+    ></allowAuth>
   </div>
 </template>
 
 <script>
 import { errorMessage, deleteSuccess } from "../../config/constant";
-import { getRoleList, deleteRole } from "../../api/role-rights";
+import { getRoleList, deleteRole, deleteRoleById } from "../../api/role-rights";
 import allowAuth from "./allowAuth.vue";
 export default {
   data() {
     return {
       tableData: [],
       showdialogVisible: false,
-      detailObj:{}
+      detailObj: {},
     };
   },
   components: {
@@ -99,7 +109,6 @@ export default {
   methods: {
     async getList() {
       const { data } = await getRoleList();
-      console.log(data);
       this.tableData = data;
     },
     removeTag(i, e) {
@@ -127,7 +136,27 @@ export default {
     // 分配权限
     distributeAuth(role) {
       this.showdialogVisible = true;
-      this.detailObj = role
+      this.detailObj = role;
+    },
+    handleClick() {
+      this.$message.success("不给你编辑！");
+    },
+    deleteByid(e) {
+      this.$confirm("确定删除吗?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      })
+        .then(async () => {
+          const { data } = await deleteRoleById(e.id);
+          if (data.meta.status === 200) {
+            this.$message.success(deleteSuccess);
+            this.getList();
+          } else {
+            this.$message.error(errorMessage);
+          }
+        })
+        .catch(() => {});
     },
   },
 };

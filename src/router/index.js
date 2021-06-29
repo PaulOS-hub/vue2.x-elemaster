@@ -37,6 +37,27 @@ const commonRoutes = [
                     Auth: true
                 }
             },
+            {
+                path: "/categories",
+                component: () => import('../pages/cate/index.vue'),
+                meta: {
+                    Auth: true
+                }
+            },
+            {
+                path: "/params",
+                component: () => import('../pages/params/index.vue'),
+                meta: {
+                    Auth: true
+                }
+            },
+            {
+                path: "/goods",
+                component: () => import('../pages/goods/index.vue'),
+                meta: {
+                    Auth: true
+                }
+            },
         ],
         meta: {
             Auth: true

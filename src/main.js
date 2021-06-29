@@ -7,6 +7,8 @@ import './style/common.less'
 import store from './store'
 import axios from 'axios'
 import { message } from './util/resetMessage'
+import ZKTable from 'vue-table-with-tree-grid'
+Vue.component('tree-table', ZKTable)
 Vue.use(ElementUI);
 Vue.prototype.$axios = axios
 Vue.prototype.$message = message
