@@ -42,7 +42,7 @@
           </template>
         </el-table-column>
         <el-table-column prop="role_name" label="角色"> </el-table-column>
-        <el-table-column label="操作" width="120">
+        <el-table-column label="操作" width="180">
           <template slot-scope="scope">
             <el-button @click="handleClick(scope.row)" type="text" size="small"
               >编辑</el-button
@@ -53,6 +53,13 @@
               style="margin-left: 15px"
               size="small"
               >删除</el-button
+            >
+            <el-button
+              type="text"
+              @click="applyUser(scope.row)"
+              style="margin-left: 15px"
+              size="small"
+              >分配角色</el-button
             >
           </template>
         </el-table-column>
@@ -71,6 +78,7 @@
       @updateList="getList"
       :changType="changType"
       :detailObj="detailObj"
+      :setRole="setRole"
       :showAddUser.sync="showAddUser"
     />
   </div>
@@ -114,6 +122,7 @@ export default {
       changType: "",
       detailObj: {},
       showAddUser: false,
+      setRole: false,
     };
   },
   components: {
@@ -138,11 +147,13 @@ export default {
     handleClick(e) {
       this.changType = "edit";
       this.detailObj = e;
+      this.setRole = false;
       this.showAddUser = true;
     },
     add() {
       this.changType = "create";
       this.detailObj = {};
+      this.setRole = false;
       this.showAddUser = true;
     },
     deleteById(e) {
@@ -174,6 +185,11 @@ export default {
       } else {
         this.$message.error(errorMessage);
       }
+    },
+    applyUser(e) {
+      this.detailObj = e;
+      this.setRole = true;
+      this.showAddUser = true;
     },
   },
 };
