@@ -230,9 +230,7 @@ export default {
   },
   methods: {
     async getOptions() {
-      const { data } = await getcategories({
-        type: 3,
-      });
+      const { data } = await getcategories();
       this.options = data;
     },
     // 选择商品分类

@@ -58,6 +58,13 @@ const commonRoutes = [
                     Auth: true
                 }
             },
+            {
+                path: "/goods/add",
+                component: () => import('../pages/goods/add/index.vue'),
+                meta: {
+                    Auth: true
+                }
+            }
         ],
         meta: {
             Auth: true

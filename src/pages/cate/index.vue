@@ -182,9 +182,7 @@ export default {
         .catch(() => {});
     },
     async showAdd() {
-      const { data } = await getcategories({
-        type: 2,
-      });
+      const { data } = await getcategories();
       this.options = data;
       this.dialogVisible = true;
       this.form = {
