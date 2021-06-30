@@ -1,6 +1,8 @@
 import Vue from 'vue'
 import VueRouter from "vue-router";
 import store from '../store'
+import NProgress from 'nprogress'
+import 'nprogress/nprogress.css'
 Vue.use(VueRouter)
 const commonRoutes = [
     {
@@ -79,7 +81,7 @@ const commonRoutes = [
                     Auth: true
                 }
             }
-            
+
         ],
         meta: {
             Auth: true
@@ -95,6 +97,7 @@ const router = new VueRouter({
     routes: commonRoutes
 })
 router.beforeEach((to, from, next) => {
+    NProgress.start()
     if (to.meta.Auth) {
         if (store.state.token) {
             if (to.path === '/login') next("/home")
@@ -111,5 +114,8 @@ router.beforeEach((to, from, next) => {
     } else {
         next()
     }
+})
+router.afterEach(() => {
+    NProgress.done()
 })
 export default router
