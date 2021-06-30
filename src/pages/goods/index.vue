@@ -7,7 +7,7 @@
     </el-breadcrumb>
     <div style="margin-top: 20px">
       <el-input
-        style="width: 220px"
+        style="width: 320px"
         clearable
         placeholder="请输入内容"
         v-model="form.searchValue"
@@ -100,7 +100,7 @@ export default {
   methods: {
     async getList() {
       const data = await getgoodsList({
-        query: this.form.searchValue,
+        query: this.form.searchValue.trim(),
         pagenum: this.pagenum,
         pagesize: this.pagesize,
       });
@@ -110,14 +110,13 @@ export default {
       } else {
         this.$message.error(errorMessage);
       }
-      console.log(data);
     },
     searchGoods() {
-      if (this.form.searchValue.trim()) {
-        this.getList();
-      }
+      this.getList();
     },
-    handleClick(e) {},
+    handleClick(e) {
+      this.$message.success("不给编辑！");
+    },
     // 删除
     deleteById(e) {
       this.$confirm("确定删除吗?", "提示", {

@@ -6,4 +6,6 @@ export const editParam = (id, pid, p) => axios.put(`categories/${id}/attributes/
 // goods
 export const getgoodsList = p => get("goods", p)
 export const delgoosdList = id => axios.delete(`goods/${id}`)
-export const getAttributesList = (id, p) => get(`categories/${id}/attributes`,p)
+export const getAttributesList = (id, p) => get(`categories/${id}/attributes`, p)
+
+export const addFormGoods = p => post('goods', p)

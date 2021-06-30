@@ -9,7 +9,7 @@
       <el-alert
         title="添加商品信息"
         :closable="false"
-        type="info"
+        type="warning"
         center
         show-icon
       >
@@ -69,10 +69,10 @@
               <el-input
                 style="width: 300px"
                 type="number"
-                v-model="addForm.goods_num"
+                v-model="addForm.goods_number"
               ></el-input>
             </el-form-item>
-            <el-form-item label="商品分类" prop="goods_type">
+            <el-form-item label="商品分类" prop="goods_cat">
               <el-cascader
                 :props="{
                   label: 'cat_name',
@@ -80,7 +80,7 @@
                 }"
                 clearable
                 style="width: 300px"
-                v-model="addForm.goods_type"
+                v-model="addForm.goods_cat"
                 :options="options"
                 @change="handleChange"
               ></el-cascader>
@@ -114,9 +114,44 @@
               ></el-input>
             </el-form-item>
           </el-tab-pane>
-          <el-tab-pane name="3" label="商品图片">定时任务补偿</el-tab-pane>
-          <el-tab-pane name="4" label="商品内容">定时任务补偿</el-tab-pane>
-          <el-tab-pane name="5" label="完成">定时任务补偿</el-tab-pane>
+          <el-tab-pane name="3" label="商品图片">
+            <!-- el-upload设置请求头，上传地址 -->
+            <el-upload
+              :headers="{
+                Authorization: $store.state.token,
+              }"
+              class="upload-demo"
+              :action="uploadUrl"
+              :on-preview="handlePreview"
+              :on-remove="handleRemove"
+              :file-list="fileList"
+              list-type="picture"
+              :on-success="uploadSuccess"
+            >
+              <el-button size="small" type="primary">点击上传</el-button>
+            </el-upload>
+            <el-dialog :visible.sync="dialogVisible">
+              <img width="100%" :src="dialogImageUrl" alt="" />
+            </el-dialog>
+          </el-tab-pane>
+          <el-tab-pane name="4" label="商品内容">
+            <quill-editor
+              ref="myQuillEditor"
+              :options="editorOption"
+              @blur="onEditorBlur($event)"
+              @focus="onEditorFocus($event)"
+              @ready="onEditorReady($event)"
+              @change="onEditorChange($event)"
+            />
+
+            <el-button
+              type="primary"
+              @click="addGoods"
+              style="width: 120px; margin-top: 20px; float: right"
+            >
+              添加商品
+            </el-button>
+          </el-tab-pane>
         </el-tabs>
       </el-form>
     </div>
@@ -125,8 +160,14 @@
 
 <script>
 import { getcategories } from "@/api/goods";
-import { getAttributesList } from "@/api/params";
+import { getAttributesList, addFormGoods } from "@/api/params";
 import { errorMessage, successMessage, deleteSuccess } from "@/config/constant";
+import { baseUrl } from "@/config/constant";
+import "quill/dist/quill.core.css";
+import "quill/dist/quill.snow.css";
+import "quill/dist/quill.bubble.css";
+import { quillEditor } from "vue-quill-editor";
+import _ from "lodash";
 export default {
   data() {
     return {
@@ -136,8 +177,11 @@ export default {
         goods_price: "",
         goods_weight: "",
         goods_number: "",
-        goods_type: [],
+        goods_cat: [],
         goods_id: "",
+        pics: [], // 图片
+        introduce: "",
+        attrs: [],
       },
       rules: {
         goods_name: [
@@ -152,7 +196,7 @@ export default {
         goods_number: [
           { required: true, message: "请输入商品数量", trigger: "blur" },
         ],
-        goods_type: [
+        goods_cat: [
           {
             required: true,
             message: "请选择商品类别，只允许选择第三级类别",
@@ -160,22 +204,41 @@ export default {
           },
         ],
       },
+      baseUrl: baseUrl,
       options: [],
       manyTableData: [], // 动态参数列表
       onlyTableData: [], // 静态
+      dialogVisible: false,
+      dialogImageUrl: "",
+      fileList: [],
+
+      //富文本
+
+      //富文本编辑器配置
+      editorOption: {
+        // Some Quill options...
+      },
     };
+  },
+  components: {
+    quillEditor,
+  },
+  computed: {
+    uploadUrl() {
+      return this.baseUrl + "upload";
+    },
   },
   mounted() {
     this.getTypeList();
   },
   methods: {
     handleChange() {
-      if (this.addForm.goods_type.length !== 3) {
-        this.addForm.goods_type = [];
+      if (this.addForm.goods_cat.length !== 3) {
+        this.addForm.goods_cat = [];
         return;
       }
       this.addForm.goods_id =
-        this.addForm.goods_type[this.addForm.goods_type.length - 1];
+        this.addForm.goods_cat[this.addForm.goods_cat.length - 1];
     },
     async getTypeList() {
       const { data } = await getcategories();
@@ -183,7 +246,7 @@ export default {
     },
     tabClick(activeName, oldActiveName) {
       if (oldActiveName === "0") {
-        if (this.addForm.goods_type.length !== 3) {
+        if (this.addForm.goods_cat.length !== 3) {
           this.$message.error("请先选择商品类别");
           return false;
         }
@@ -228,6 +291,75 @@ export default {
         this.currentStaticGetAttributesList();
       }
     },
+    handleRemove(file) {
+      // 查找索引位置
+      const curIndex = this.addForm.pics.findIndex((item) => {
+        item.pic === file.response.data.tmp_path;
+      });
+      this.addForm.pics.splice(curIndex, 1);
+    },
+    handlePreview(file) {
+      this.dialogImageUrl = file.url;
+      this.dialogVisible = true;
+    },
+    // 上传成功
+    uploadSuccess({ data }) {
+      // console.log()
+      this.addForm.pics.push({
+        pic: data.tmp_path,
+      });
+    },
+
+    // 富文本
+    //失去焦点事件
+    onEditorBlur(quill) {},
+    //获得焦点事件
+    onEditorFocus(quill) {},
+    // 准备富文本编辑器
+    onEditorReady(quill) {},
+    //内容改变事件
+    onEditorChange({ quill, html, text }) {
+      this.addForm.introduce = text;
+    },
+
+    //添加商品
+    addGoods() {
+      this.$refs["addForm"].validate(async (valid) => {
+        if (valid) {
+          //
+          [...this.manyTableData, ...this.onlyTableData].forEach((item) => {
+            const newInfo = {
+              attr_id: item.attr_id,
+              attr_value: item.attr_vals ? item.attr_vals.join(" ") : "",
+            };
+            this.addForm.attrs.push(newInfo);
+          });
+
+          let addFormCopy = _.cloneDeep(this.addForm);
+          addFormCopy.goods_cat = this.addForm.goods_cat.join(",");
+          console.log(addFormCopy);
+          const data  = await addFormGoods({
+            goods_name: addFormCopy.goods_name,
+            goods_cat: addFormCopy.goods_cat,
+            goods_number:addFormCopy.goods_number,
+            goods_price: addFormCopy.goods_price,
+            goods_weight: addFormCopy.goods_weight,
+            goods_introduce: addFormCopy.goods_introduce,
+            pics: JSON.stringify(addFormCopy.pics),
+          });
+          if (data.meta.status === 201) {
+            this.$message.success(successMessage);
+            this.$router.push("/goods")
+          } else {
+            this.$message.error(data.meta.msg);
+          }
+          
+        } else {
+          this.$message.error("请填写必要的表单项");
+          return false;
+        }
+      });
+    },
   },
 };
 </script>
@@ -235,5 +367,10 @@ export default {
 <style lang="less" scoped>
 /deep/ .el-checkbox {
   margin: 0 10px 0 0 !important;
+}
+/deep/ .ql-container {
+  min-height: 400px !important;
+  max-height: 400px !important;
+  overflow: auto;
 }
 </style>

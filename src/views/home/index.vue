@@ -68,7 +68,7 @@
             </el-menu>
           </el-aside>
         </div>
-        <el-main style="flex: 1">
+        <el-main style="flex: 1;background:#f5f5f5">
           <router-view></router-view>
         </el-main>
       </el-container>
@@ -92,7 +92,7 @@ export default {
         102: "el-icon-link",
         145: "el-icon-goblet-square-full",
       },
-      isCollapse: true,
+      isCollapse: false,
     };
   },
   watch: {
