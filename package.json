@@ -9,15 +9,22 @@
     "start": "npm run serve"
   },
   "dependencies": {
+    "@vue/compiler-sfc": "^3.1.2",
     "axios": "^0.21.1",
+    "compression-webpack-plugin": "^5.0.1",
     "core-js": "^3.6.5",
     "echarts": "^5.1.2",
     "element-ui": "^2.15.2",
+    "file-loader": "^6.2.0",
+    "image-webpack-loader": "^7.0.1",
     "less": "^4.1.1",
     "less-loader": "^6.0.0",
     "lodash": "^4.17.21",
     "nprogress": "^0.2.0",
+    "svg-sprite-loader": "^6.0.9",
+    "url-loader": "^4.1.1",
     "vue": "^2.6.11",
+    "vue-loader": "^16.3.0",
     "vue-quill-editor": "^3.0.6",
     "vue-router": "^3.5.2",
     "vue-table-with-tree-grid": "^0.2.4",
@@ -29,9 +36,13 @@
     "@vue/cli-plugin-eslint": "~4.5.0",
     "@vue/cli-service": "~4.5.0",
     "babel-eslint": "^10.1.0",
+    "babel-plugin-transform-remove-console": "^6.9.4",
     "eslint": "^6.7.2",
     "eslint-plugin-vue": "^6.2.2",
-    "vue-template-compiler": "^2.6.11"
+    "prerender-spa-plugin": "^3.4.0",
+    "uglifyjs-webpack-plugin": "^2.2.0",
+    "vue-template-compiler": "^2.6.11",
+    "webpack-bundle-analyzer": "^4.4.2"
   },
   "eslintConfig": {
     "root": false,

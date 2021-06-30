@@ -8,7 +8,7 @@
     >
       <div class="title-icon">
         <div class="avatar">
-          <img src="../../assets/logo.png" alt="" />
+          <img src="../../assets/logo.webp" alt="" />
         </div>
       </div>
       <el-form-item

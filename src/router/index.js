@@ -2,7 +2,7 @@ import Vue from 'vue'
 import VueRouter from "vue-router";
 import store from '../store'
 import NProgress from 'nprogress'
-import 'nprogress/nprogress.css'
+// import 'nprogress/nprogress.css'
 Vue.use(VueRouter)
 const commonRoutes = [
     {
