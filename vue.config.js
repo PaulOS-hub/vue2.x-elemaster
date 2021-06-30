@@ -233,18 +233,12 @@ module.exports = {
                         }
                     })
                 // // 压缩图片
-                // config.module
-                //     .rule('images')
-                //     .test(/\.(png|jpe?g|gif|svg)(\?.*)?$/)
-                //     .use('image-webpack-loader')
-                //     .loader('image-webpack-loader')
-                //     .options({ bypassOnDebug: true })
-                // // 压缩图片
-                // config.module
-                //     .rule('images')
-                //     .test(/\.(png|jpe?g|gif|svg)(\?.*)?$/)
-                //     .use('url-loader')
-                //     .loader('url-loader')
+                config.module
+                    .rule('images')
+                    .test(/\.(png|jpe?g|gif|svg|webp)(\?.*)?$/)
+                    .use('image-webpack-loader')
+                    .loader('image-webpack-loader')
+                    .options({ bypassOnDebug: true })
 
                 // runtimeChunk作用是为了线上更新版本时，充分利用浏览器缓存，使用户感知的影响到最低。
                 config.optimization.runtimeChunk('single')
