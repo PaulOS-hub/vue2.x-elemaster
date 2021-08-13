@@ -2,6 +2,8 @@ import Vue from "vue";
 import VueRouter from "vue-router";
 import store from "../store";
 import NProgress from "nprogress";
+import { GenerateRoutes } from "../util/permission";
+import { ROLES } from "../config/roles";
 // import 'nprogress/nprogress.css'
 Vue.use(VueRouter);
 // push
@@ -28,7 +30,7 @@ export const asyncRoutes = [
         path: "/home/users",
         component: () => import("../pages/users"),
         meta: {
-          roles: ["admin", "document"],
+          roles: ["superadmin", "admin", "document"],
         },
       },
       {
@@ -105,37 +107,7 @@ export const asyncRoutes = [
 const router = new VueRouter({
   routes: constantRoutes,
 });
-function hasPermission(roles, route) {
-  if (route.meta && route.meta.roles) {
-    return roles.some((role) => route.meta.roles.indexOf(role) >= 0);
-  } else {
-    return true;
-  }
-}
-function GenerateRoutes(data) {
-  return new Promise((resolve) => {
-    const { roles } = data;
-    const accessedRouters = asyncRoutes.filter((v) => {
-      if (roles.indexOf("superadmin") >= 0) return true; // 如果你是超级管理员，那么全部通过
-      if (hasPermission(roles, v)) {
-        if (v.children && v.children.length > 0) {
-          v.children = v.children.filter((child) => {
-            if (hasPermission(roles, child)) {
-              return child;
-            }
-            return false;
-          });
-          return v;
-        } else {
-          return v;
-        }
-      }
-      return false;
-    });
 
-    resolve(accessedRouters);
-  });
-}
 router.beforeEach(async (to, from, next) => {
   NProgress.start();
   // 此时需要权限
@@ -151,7 +123,7 @@ router.beforeEach(async (to, from, next) => {
         next();
       } else {
         try {
-          store.commit("SET_ROLES", ["document", "write"]);
+          store.commit("SET_ROLES", ROLES);
           const asyncroutes = await GenerateRoutes({
             roles: store.state.roles,
           });

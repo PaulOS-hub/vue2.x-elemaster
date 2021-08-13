@@ -48,6 +48,7 @@
 
 <script>
 import { login } from "../../api/login";
+import { ROLES } from "../../config/roles";
 import { mapMutations } from "vuex";
 export default {
   data() {
@@ -69,9 +70,7 @@ export default {
             // 保存token至Store
             // 若有属性，代表成功
             this.$message.success("登录成功");
-
-            this.SET_ROLES(["document", "write"]);
-
+            this.SET_ROLES(ROLES);
             this.$router.push({
               path: "/home",
             });
