@@ -59,21 +59,25 @@ export default {
     };
   },
   methods: {
-    ...mapMutations(["SET_TOKEN"]),
+    ...mapMutations(["SET_TOKEN", "SET_ROLES"]),
     submitForm(formName) {
       this.$refs[formName].validate(async (valid) => {
         if (valid) {
           const { data } = await login(this.numberValidateForm);
-          this.SET_TOKEN(data.token);
           if (data) {
+            this.SET_TOKEN(data.token);
             // 保存token至Store
             // 若有属性，代表成功
             this.$message.success("登录成功");
+
+            this.SET_ROLES(["document", "write"]);
+
             this.$router.push({
               path: "/home",
             });
           } else {
             this.$message.error("登录失败，账号或密码不正确");
+            this.numberValidateForm.password = "";
           }
         } else {
           return false;

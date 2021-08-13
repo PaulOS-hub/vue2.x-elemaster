@@ -10,12 +10,18 @@
         >
           <div class="header-flex">
             <div class="logoBG"></div>
-            <el-submenu style="width:110px" :popper-append-to-body="false" index="x">
+            <el-submenu
+              style="width: 110px"
+              :popper-append-to-body="false"
+              index="x"
+            >
               <template slot="title">
                 <div class="el-icon-user avatar"></div>
               </template>
               <el-menu-item>
-                <div style="textalign: center;width:110px" @click="logout">退出登录</div>
+                <div style="textalign: center; width: 110px" @click="logout">
+                  退出登录
+                </div>
               </el-menu-item>
             </el-submenu>
           </div>
@@ -33,8 +39,7 @@
               'el-icon-s-unfold': isCollapse,
               showSideBar: true,
             }"
-          >
-          </div>
+          ></div>
           <el-aside :width="isCollapse ? '70px' : '200px'">
             <el-menu
               :collapse-transition="false"
@@ -48,27 +53,24 @@
               active-text-color="#409eff"
             >
               <el-submenu
-                v-for="item in sidebarList"
-                :key="item.id"
-                :index="item.id + ''"
+                v-for="(item, index) in sidebarList"
+                :key="index"
+                :index="index + ''"
               >
                 <template slot="title">
                   <i :class="iconList[item.id]"></i>
-                  <span>{{ item.authName }}</span>
+                  <span>{{ item.name }}</span>
                 </template>
-                <el-menu-item-group v-if="item.children">
-                  <el-menu-item
-                    v-for="item_ in item.children"
-                    :key="item_.id"
-                    :index="'/' + item_.path"
-                    >{{ item_.authName }}</el-menu-item
-                  >
+                <el-menu-item-group>
+                  <el-menu-item :index="item.path">{{
+                    item.name
+                  }}</el-menu-item>
                 </el-menu-item-group>
               </el-submenu>
             </el-menu>
           </el-aside>
         </div>
-        <el-main style="flex: 1;background:#f5f5f5">
+        <el-main style="flex: 1; background: #f5f5f5">
           <router-view></router-view>
         </el-main>
       </el-container>
@@ -122,7 +124,19 @@ export default {
     },
     async getSideBarData() {
       const { data } = await getSideBar();
-      this.sidebarList = data;
+      // this.sidebarList = data;
+
+      this.sidebarList = this.$store.state.routes[2].children;
+      console.log(this.sidebarList);
+      // let arr2 = JSON.parse(JSON.stringify(data));
+      // let intersection = arr2.filter((val) => {
+      //   val.children.filter((item) => {
+      //     // return arr.forEach((item2) => {
+      //     return "/home/" + item.path === "/home/roles";
+      //     // });
+      //   });
+      // });
+      // console.log(intersection, "intersectionintersectionintersection");
     },
   },
 };

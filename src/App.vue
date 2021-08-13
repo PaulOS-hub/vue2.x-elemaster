@@ -5,12 +5,18 @@
 </template>
 
 <script>
-
 export default {
-  name: 'App'
-}
+  name: "App",
+  watch: {
+    $route: {
+      handler(newVal) {
+        console.log(newVal);
+      },
+      immediate: true,
+    },
+  },
+};
 </script>
 
 <style>
-
 </style>
